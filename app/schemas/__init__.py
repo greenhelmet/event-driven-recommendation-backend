@@ -1,1 +1,1 @@
-from .event import Event, EventResponse, EventType
+from .event import EventCreate, EventResponse, EventType
