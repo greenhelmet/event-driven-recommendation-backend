@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from enum import Enum
 
@@ -20,5 +20,4 @@ class EventResponse(BaseModel):
     item_id: str
     event_type: EventType
     
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
