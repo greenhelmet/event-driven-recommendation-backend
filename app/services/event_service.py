@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from app.models.event import Event
 from app.schemas.event import EventCreate
 
+from sqlalchemy.exc import SQLAlchemyError
+
 
 def create_event(db: Session, event: EventCreate):
     try:
@@ -10,7 +12,7 @@ def create_event(db: Session, event: EventCreate):
         db.commit()
         db.refresh(db_event)
         return db_event
-    except Exception:
+    except SQLAlchemyError:
         db.rollback()
         raise
 
