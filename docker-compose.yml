@@ -1,15 +1,18 @@
-version: "3.9"
-
 services:
   api:
     build: .
     container_name: fastapi_api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
       DATABASE_URL: postgresql://fastapi_user:fastapi_pass@db:5432/fastapi_db
+      ENV: local
+      PYTHONPATH: /app
 
   db:
     image: postgres:15
@@ -20,6 +23,8 @@ services:
       POSTGRES_PASSWORD: fastapi_pass
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer:latest

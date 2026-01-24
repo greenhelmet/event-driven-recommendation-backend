@@ -5,6 +5,9 @@ from app.core.config import settings
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True, # DB connection 유효성 검사
+    pool_size=5,
+    max_overflow=10,
+    future=True,
 )
 
 SessionLocal = sessionmaker(

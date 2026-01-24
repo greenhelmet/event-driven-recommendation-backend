@@ -4,11 +4,13 @@ from sqlalchemy.orm import Session
 from app.db.deps import get_db
 from app.schemas.event import EventCreate, EventResponse
 from app.services import event_service
+from app.core.exceptions import BaseAppException
 
 router = APIRouter(
     prefix="/api/v1/events",
     tags=["Events"]
 )
+
 
 @router.post(
     "",
@@ -17,18 +19,23 @@ router = APIRouter(
 )
 def create_event_endpoint(
     event: EventCreate,
-    db: Session = Depends(get_db) 
-):
-    return event_service.create_event(db, event)
-
-@router.get(
-    "",
-    response_model=list[EventResponse],
-    status_code=status.HTTP_200_OK
-)
-def list_event_endpoint(
-    skip: int = Query(0, ge=0, description="Offset for pagination"),
-    limit: int = Query(10, ge=1, le=100, description="Page size"),
     db: Session = Depends(get_db),
-):
-    return event_service.get_events(db, skip, limit)
+) -> EventResponse:
+    """
+    이벤트 생성 API
+    (Router에서 트랜잭션 관리)
+    """
+    try:
+        db_event = event_service.create_event(db=db, event=event)
+        db.commit()
+        db.refresh(db_event)
+        
+        return EventResponse.model_validate(db_event)
+
+    except BaseAppException:
+        db.rollback()
+        raise
+
+    except Exception:
+        db.rollback()
+        raise

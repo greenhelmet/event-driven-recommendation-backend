@@ -1,23 +1,21 @@
 from pydantic_settings import BaseSettings
-from functools import lru_cache
+from pydantic import Field
 
 
 class Settings(BaseSettings):
-    # App
-    APP_NAME: str = "FastAPI Event Service"
-    ENV: str = "local"
+    APP_NAME: str = "FastAPI App"
+    ENV: str = Field(default="local", description="local | test | prod")
 
-    # Database
     DATABASE_URL: str
+
+    LOG_LEVEL: str = Field(
+        default="INFO",
+        description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
+    )
 
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
 
 
-@lru_cache()
-def get_settings() -> Settings:
-    return Settings()
-
-
-settings = get_settings()
+settings = Settings()
