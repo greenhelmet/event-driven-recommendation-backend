@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List
 
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -38,6 +39,11 @@ class EventResponse(BaseModel):
     user_id: int
     item_id: str
     event_type: EventType
+    event_time: datetime | None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+    
+class EventListResponse(BaseModel):
+    total: int
+    items: List[EventResponse]
