@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
+from app.api import auth
 from app.api.event import router as event_router
 from app.core.config import settings
 from app.db.init_db import init_db
@@ -63,4 +64,5 @@ app.add_exception_handler(Exception, unhandled_exception_handler)
 # Routers
 # =========================
 
+app.include_router(auth.router)
 app.include_router(event_router)

@@ -1,17 +1,12 @@
-from pydantic_settings import BaseSettings
-from pydantic import Field
+from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "FastAPI App"
-    ENV: str = Field(default="local", description="local | test | prod")
-
     DATABASE_URL: str
-
-    LOG_LEVEL: str = Field(
-        default="INFO",
-        description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
-    )
+    
+    SECRET_KEY: str = "super-secret-key"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     class Config:
         env_file = ".env"

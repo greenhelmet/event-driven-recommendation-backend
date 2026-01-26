@@ -6,6 +6,8 @@ from app.schemas.event import EventCreate, EventResponse
 from app.services import event_service
 from app.core.exceptions import BaseAppException
 
+from app.api.permissions import require_role
+
 router = APIRouter(
     prefix="/api/v1/events",
     tags=["Events"]
@@ -15,9 +17,10 @@ router = APIRouter(
 @router.post(
     "",
     response_model=EventResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_role("admin"))]
 )
-def create_event_endpoint(
+async def create_event_endpoint(
     event: EventCreate,
     db: Session = Depends(get_db),
 ) -> EventResponse:
